@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Envoi de Candies - Discord Webhook</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #0d0d0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #c084fc;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background-color: #1a1a1f;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(192, 132, 252, 0.2);
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    select, input, button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 1em;
+    }
+
+    select, input {
+      background-color: #2a2a30;
+      color: #fff;
+    }
+
+    button {
+      background: linear-gradient(90deg, #8b5cf6, #6366f1);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+    }
+
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍬 Envoi de Candies</h1>
+  <form id="webhookForm">
+    <label for="user">Utilisateur :</label>
+    <select id="user" required>
+      <option value="">-- Sélectionner --</option>
+      <option value="viernoi86">viernoi86</option>
+      <option value="wtomas2021">wtomas2021</option>
+      <option value="refedmm2">refedmm2</option>
+    </select>
+
+    <label for="candiesNow">Candies actuels :</label>
+    <input type="number" id="candiesNow" placeholder="Ex : 57" required>
+
+    <label for="candiesTotal">Candies totaux :</label>
+    <input type="number" id="candiesTotal" placeholder="Ex : 320" required>
+
+    <button type="submit">Envoyer sur Discord 🚀</button>
+    <div class="status" id="status"></div>
+  </form>
+
+  <script>
+    const webhooks = {
+      "viernoi86": "https://discord.com/api/webhooks/1435028749430034483/lnJn59Urca2EQEbhR4wk3vhdB1m5pFyW4iRXPINT_o9PY_9rI_UBx3yQBrwUJhiuwnMD",
+      "wtomas2021": "https://discord.com/api/webhooks/1430308981921812661/stOKvu-nXuTmciconSjEAVzoQAgLfqhuSOGTypnFHTTEpyDX45hSANWE_PHy-s8iHdSc",
+      "refedmm2": "https://discord.com/api/webhooks/1435028808062341140/BOlWljJBKa9E86HqfEiDEhx5sIV4dDoZDm_YtE7GO1v_iw9siGJLyW1wTckOAO-C8GiI"
+    };
+
+    const colors = {
+      "viernoi86": 0x9b5de5, // violet
+      "wtomas2021": 0x3b82f6, // bleu
+      "refedmm2": 0x10b981  // vert
+    };
+
+    document.getElementById("webhookForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const user = document.getElementById("user").value;
+      const candiesNow = document.getElementById("candiesNow").value;
+      const candiesTotal = document.getElementById("candiesTotal").value;
+      const status = document.getElementById("status");
+
+      if (!user || !candiesNow || !candiesTotal) {
+        status.textContent = "⚠️ Veuillez remplir tous les champs.";
+        return;
+      }
+
+      const webhookURL = webhooks[user];
+      const color = colors[user];
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString("fr-FR");
+      const timeStr = now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+
+      const embed = {
+        title: `🍬 Mise à jour de ${user}`,
+        color: color,
+        fields: [
+          { name: "Candies actuels", value: candiesNow.toString(), inline: true },
+          { name: "Candies totaux", value: candiesTotal.toString(), inline: true }
+        ],
+        footer: { text: `📅 ${dateStr} à ${timeStr}` }
+      };
+
+      try {
+        const response = await fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+
+        if (response.ok) {
+          status.textContent = "✅ Message envoyé avec succès !";
+          status.style.color = "#10b981";
+        } else {
+          status.textContent = "❌ Erreur lors de l’envoi.";
+          status.style.color = "#ef4444";
+        }
+      } catch (error) {
+        console.error(error);
+        status.textContent = "⚠️ Impossible de contacter le webhook.";
+        status.style.color = "#facc15";
+      }
+    });
+  </script>
+</body>
+</html>
