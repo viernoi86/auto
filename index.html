@@ -74,6 +74,8 @@
       <option value="viernoi86">viernoi86</option>
       <option value="wtomas2021">wtomas2021</option>
       <option value="refedmm2">refedmm2</option>
+      <option value="viernoi87">viernoi87</option>
+      <option value="palomapoit">palomapoit</option>
     </select>
 
     <label for="candiesNow">Candies actuels :</label>
@@ -90,14 +92,23 @@
     const webhooks = {
       "viernoi86": "https://discord.com/api/webhooks/1435028749430034483/lnJn59Urca2EQEbhR4wk3vhdB1m5pFyW4iRXPINT_o9PY_9rI_UBx3yQBrwUJhiuwnMD",
       "wtomas2021": "https://discord.com/api/webhooks/1430308981921812661/stOKvu-nXuTmciconSjEAVzoQAgLfqhuSOGTypnFHTTEpyDX45hSANWE_PHy-s8iHdSc",
-      "refedmm2": "https://discord.com/api/webhooks/1435028808062341140/BOlWljJBKa9E86HqfEiDEhx5sIV4dDoZDm_YtE7GO1v_iw9siGJLyW1wTckOAO-C8GiI"
+      "refedmm2": "https://discord.com/api/webhooks/1435028808062341140/BOlWljJBKa9E86HqfEiDEhx5sIV4dDoZDm_YtE7GO1v_iw9siGJLyW1wTckOAO-C8GiI",
+      "viernoi87": "https://discordapp.com/api/webhooks/1437508987976421399/2kSrxZYHon2ijtoayzSt14yu1gDEjL0K71cvQ9LwKwNen4YlQstGXoTuM_-EGzrBH2QV",
+      "palomapoit": "https://discordapp.com/api/webhooks/1437509138346414123/NqsLmyvM11bfxYjZ6tY8POypTiEogGxrr_VPQPMXofIkHOyuSAXOE2ZGmkCz8XasvlGr"
     };
 
     const colors = {
       "viernoi86": 0x9b5de5, // violet
       "wtomas2021": 0x3b82f6, // bleu
-      "refedmm2": 0x10b981  // vert
+      "refedmm2": 0x10b981,  // vert
+      "viernoi87": 0xf59e0b, // orange
+      "palomapoit": 0xec4899 // rose
     };
+
+    // Formater les nombres avec des points
+    function formatNumber(num) {
+      return new Intl.NumberFormat("fr-FR").format(num);
+    }
 
     document.getElementById("webhookForm").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -123,8 +134,8 @@
         title: `🍬 Mise à jour de ${user}`,
         color: color,
         fields: [
-          { name: "Candies actuels", value: candiesNow.toString(), inline: true },
-          { name: "Candies totaux", value: candiesTotal.toString(), inline: true }
+          { name: "Candies actuels", value: formatNumber(candiesNow), inline: true },
+          { name: "Candies totaux", value: formatNumber(candiesTotal), inline: true }
         ],
         footer: { text: `📅 ${dateStr} à ${timeStr}` }
       };
